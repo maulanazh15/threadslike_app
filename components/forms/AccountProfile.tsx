@@ -26,11 +26,12 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar"
 interface Props {
     user: {
         id: string,
-        objectid: string,
+        objectId: string,
         username: string,
         name: string,
         bio: string,
         image: string
+       
     }
     btnTitle: string
 }

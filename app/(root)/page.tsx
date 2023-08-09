@@ -12,6 +12,7 @@ export default async function Home() {
   const result = await fetchThreads(1, 30);
   const user = await currentUser()
 
+  
 
   return (
     <div>
