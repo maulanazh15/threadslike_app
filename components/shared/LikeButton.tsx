@@ -1,10 +1,12 @@
 "use client";
 import { userDislikesThread, userLikesThread } from "@/lib/actions/user.action";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { revalidatePath } from "next/cache"
+import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react";
 
 export default function LikeButton({ userId, like, stateLike, threadId }: { stateLike: boolean; userId: string; like: number; threadId: string }) {
+    const pathname = usePathname()
 
     const [likes, setLikes] = useState(like);
     const [clicked, setClicked] = useState(stateLike);
@@ -16,11 +18,11 @@ export default function LikeButton({ userId, like, stateLike, threadId }: { stat
 
     const handleLikeClick = async () => {
         if (!clicked) {
-            await userLikesThread({ userId, threadId });
+            await userLikesThread({ userId, threadId, path: pathname });
             setLikes(likes + 1);
             setClicked(true);
         } else {
-            await userDislikesThread({ userId, threadId });
+            await userDislikesThread({ userId, threadId, path: pathname });
             setLikes(likes - 1);
             setClicked(false);
         }

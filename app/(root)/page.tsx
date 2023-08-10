@@ -3,9 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { fetchThreads } from "@/lib/actions/thread.action";
 import { UserButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs";
-import { revalidatePath } from "next/cache";
-import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+
 
 export default async function Home() {
   

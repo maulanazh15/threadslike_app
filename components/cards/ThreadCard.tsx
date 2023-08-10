@@ -8,6 +8,7 @@ import { useState } from "react"
 import LikeButton from "../shared/LikeButton"
 import { threadId } from "worker_threads"
 
+
 interface Props {
     id: string,
     currentUserId: string,
@@ -46,8 +47,8 @@ export default async function ThreadCard({
     comments,
     isComment,
 }: Props) {
-    const stateLikeThread = await checkUserLikeThread({ userId: currentUserId, threadId: id })
-    const likes = await getThreadLikes(id)
+   const likes = await getThreadLikes(id)
+   const stateLikeThread = await checkUserLikeThread({userId: currentUserId, threadId: id}) 
     return (
         <article className={`flex w-full flex-col rounded-xl ${isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'}`}>
             <div className="flex items-start justify-between">

@@ -32,7 +32,7 @@ export default async function ThreadsTab({
                 result.threads.map((thread: any) => (
                     <ThreadCard
                         key={thread._id}
-                        id={thread._id}
+                        id={JSON.parse(JSON.stringify(thread._id))}
                         currentUserId={currentUserId}
                         content={thread.text}
                         parentId={thread.parentId}

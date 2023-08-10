@@ -182,7 +182,7 @@ export async function getActivity(userId: string) {
     }
 }
 
-export async function userLikesThread({userId, threadId} : {userId: string, threadId: string}) {
+export async function userLikesThread({userId, threadId , path} : {userId: string, threadId: string, path: string}) {
     try {
         connectToDB()
 
@@ -195,13 +195,14 @@ export async function userLikesThread({userId, threadId} : {userId: string, thre
         const like = await getThreadLikes(threadId)
         await Thread.findByIdAndUpdate(threadId, { likes: like })
 
+        revalidatePath(path)
     } catch (error: any) {
         throw new Error(error.message);
         
     }
 }
 
-export async function userDislikesThread({ userId, threadId }: { userId: string, threadId: string }) {
+export async function userDislikesThread({ userId, threadId, path }: { userId: string, threadId: string, path: string }) {
     try {
         connectToDB();
 
@@ -220,6 +221,8 @@ export async function userDislikesThread({ userId, threadId }: { userId: string,
         
         // Decrement the likes count for the thread
         await Thread.findByIdAndUpdate(threadId, { likes: like } );
+
+        revalidatePath(path)
 
     } catch (error: any) {
         throw new Error(error.message);
@@ -243,7 +246,7 @@ export async function getThreadLikes(threadId: string) {
     }
   }
 
-export async function checkUserLikeThread({ userId, threadId }: { userId: string, threadId: string }) {
+export async function checkUserLikeThread({ userId, threadId }: { userId: string, threadId: string}) {
     try {
         const user = await User.findOne({ id: userId, likedThreads: threadId });
         // console.log(!!user)
