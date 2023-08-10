@@ -9,7 +9,7 @@ export default function Loading() {
   return (
 
     <section>
-      <h1 className="head-text mb-10">Search Page</h1>
+      <h1 className="head-text mb-10">Search</h1>
       {/* {Serach bar} */}
 
       <div className="mt-14 flex flex-col gap-9">

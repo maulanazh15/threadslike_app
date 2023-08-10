@@ -2,8 +2,11 @@ import Image from "next/image"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { formatDateString } from "@/lib/utils"
-import { fetchCommunityDetails } from "@/lib/actions/community.action"
 import DeleteThread from "../forms/DeleteThread"
+import { checkUserLikeThread, getThreadLikes } from "@/lib/actions/user.action"
+import { useState } from "react"
+import LikeButton from "../shared/LikeButton"
+import { threadId } from "worker_threads"
 
 interface Props {
     id: string,
@@ -43,6 +46,8 @@ export default async function ThreadCard({
     comments,
     isComment,
 }: Props) {
+    const stateLikeThread = await checkUserLikeThread({ userId: currentUserId, threadId: id })
+    const likes = await getThreadLikes(id)
     return (
         <article className={`flex w-full flex-col rounded-xl ${isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'}`}>
             <div className="flex items-start justify-between">
@@ -66,7 +71,10 @@ export default async function ThreadCard({
                         <p className="mt-2 text-small-regular text-light-2">{content}</p>
                         <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
                             <div className="flex gap-3.5">
-                                <Image src={"/assets/heart-gray.svg"} alt="heart" width={24} height={24} className="cursor-pointer object-contain" />
+                                {/* <Image src={"/assets/heart-gray.svg"} alt="heart" width={24} height={24} className="cursor-pointer object-contain" />
+                                    <p className='text-subtle-medium text-gray-1'>{likes}</p> */}
+                                <LikeButton userId={currentUserId} like={likes} threadId={id} stateLike={stateLikeThread} />
+
                                 <Link href={'/thread/' + id}>
                                     <Image src={"/assets/reply.svg"} alt="reply" width={24} height={24} className="cursor-pointer object-contain" />
                                 </Link>
@@ -94,7 +102,7 @@ export default async function ThreadCard({
                                         //     height={24}
                                         //     className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
                                         // />
-                                        <Avatar className={`${index !== 0 && "-ml-5"} h-[24px] w-[24px]`}>
+                                        <Avatar key={index} className={`${index !== 0 && "-ml-5"} h-[24px] w-[24px]`}>
                                             <AvatarImage src={comment.author.image} />
                                             <AvatarFallback>{
                                                 comment.author.name.split(" ").map((word: string) => word[0])

@@ -23,7 +23,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div>
                 <ThreadCard
                     key={thread._id}
-                    id={thread._id}
+                    id={JSON.parse(JSON.stringify(thread._id))}
                     currentUserId={user?.id || ""}
                     content={thread.text}
                     parentId={thread.parentId}
@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <Comment
                     threadId={thread.id}
                     currentUserImg={userInfo.image}
-                    currentUserId={JSON.stringify(userInfo._id)}
+                    currentUserId={JSON.parse(JSON.stringify(userInfo._id))}
                     fallbackname={userInfo.name}
 
                 />
@@ -49,7 +49,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                     thread.children.map((childitem: any) => (
                         <ThreadCard
                             key={childitem._id}
-                            id={childitem._id}
+                            id={JSON.parse(JSON.stringify(childitem._id))}
                             currentUserId={user?.id || ""}
                             content={childitem.text}
                             parentId={childitem.parentId}

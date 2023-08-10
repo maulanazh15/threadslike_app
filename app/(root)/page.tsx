@@ -12,7 +12,6 @@ export default async function Home() {
   const result = await fetchThreads(1, 30);
   const user = await currentUser()
 
-  
 
   return (
     <div>
@@ -29,7 +28,7 @@ export default async function Home() {
               {result.threads.map((thread) => (
                 <ThreadCard
                   key={thread._id}
-                  id={thread._id}
+                  id={JSON.parse(JSON.stringify(thread._id))}
                   currentUserId={user?.id || ""}
                   content={thread.text}
                   parentId={thread.parentId}

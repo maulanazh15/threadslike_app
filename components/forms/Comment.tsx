@@ -35,6 +35,7 @@ interface Props {
 export default function Comment({ threadId, currentUserImg, currentUserId, fallbackname }: Props) {
     const router = useRouter()
     const pathname = usePathname()
+    
 
     const form = useForm({
         resolver: zodResolver(CommentValidation),
@@ -45,7 +46,7 @@ export default function Comment({ threadId, currentUserImg, currentUserId, fallb
     })
 
     async function onSubmit(values: z.infer<typeof CommentValidation>) {
-        await addCommentToThread(threadId, values.thread, JSON.parse(currentUserId), pathname)
+        await addCommentToThread(threadId, values.thread, currentUserId, pathname)
 
         form.reset()
         // router.push("/")

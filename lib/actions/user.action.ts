@@ -181,3 +181,74 @@ export async function getActivity(userId: string) {
         throw error;
     }
 }
+
+export async function userLikesThread({userId, threadId} : {userId: string, threadId: string}) {
+    try {
+        connectToDB()
+
+        await User.findOneAndUpdate({
+            id: userId
+        }, { $push: { likedThreads:  threadId }  })
+        const userid = await User.findOne({id: userId}).select('_id')
+        // console.log(userid._id)
+        await Thread.findOneAndUpdate({_id: threadId}, { $push: {likedByUsers: userid._id} })
+        const like = await getThreadLikes(threadId)
+        await Thread.findByIdAndUpdate(threadId, { likes: like })
+
+    } catch (error: any) {
+        throw new Error(error.message);
+        
+    }
+}
+
+export async function userDislikesThread({ userId, threadId }: { userId: string, threadId: string }) {
+    try {
+        connectToDB();
+
+        // Remove the threadId from the likedThreads array for the user
+        await User.findOneAndUpdate(
+            { id: userId },
+            { $pull: { likedThreads: threadId } }
+        );
+
+        const userid = await User.findOne({id: userId}).select('_id')
+        await Thread.findOneAndUpdate(
+            { _id: threadId },
+            { $pull: { likedByUsers: userid._id } }
+        );
+        const like = await getThreadLikes(threadId)
+        
+        // Decrement the likes count for the thread
+        await Thread.findByIdAndUpdate(threadId, { likes: like } );
+
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getThreadLikes(threadId: string) {
+    try {
+      connectToDB();
+  
+      const thread = await Thread.findById(threadId).select('likedByUsers');
+      if (!thread) {
+        return 0; // Thread not found
+      }
+  
+      const likeCount = thread.likedByUsers.length;
+    //   console.log(likeCount)
+      return likeCount;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+export async function checkUserLikeThread({ userId, threadId }: { userId: string, threadId: string }) {
+    try {
+        const user = await User.findOne({ id: userId, likedThreads: threadId });
+        // console.log(!!user)
+        return !!user; // Returns true if user exists (liked the thread), false otherwise
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
