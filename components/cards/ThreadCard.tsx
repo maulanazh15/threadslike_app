@@ -36,7 +36,7 @@ interface Props {
     }[],
     isComment?: boolean
     isLoading?: boolean
-    likes: number
+    likes?: number
 }
 
 
@@ -50,9 +50,9 @@ export default async function ThreadCard({
     createdAt,
     comments,
     isComment,
-    likes,
 }: Props) {
-    const stateLike = await checkUserLikeThread({ userId: currentUserId, threadId: id })
+    
+    // const stateLike = await checkUserLikeThread({ userId: currentUserId, threadId: id })
     return (
         <article className={`flex w-full flex-col rounded-xl ${isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'}`}>
             <div className="flex items-start justify-between">
@@ -78,7 +78,7 @@ export default async function ThreadCard({
                             <div className="flex gap-3.5">
                                 {/* <Image src={"/assets/heart-gray.svg"} alt="heart" width={24} height={24} className="cursor-pointer object-contain" />
                                     <p className='text-subtle-medium text-gray-1'>{likes}</p> */}
-                                    <LikeButton userId={currentUserId} like={likes} threadId={id} stateLike={stateLike} />
+                                    <LikeButton userId={currentUserId} threadId={id} />
                             
                                 <Link href={'/thread/' + id}>
                                     <Image src={"/assets/reply.svg"} alt="reply" width={24} height={24} className="cursor-pointer object-contain" />

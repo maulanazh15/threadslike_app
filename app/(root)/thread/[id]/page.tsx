@@ -31,7 +31,6 @@ export default async function Page({ params }: { params: { id: string } }) {
                     community={thread.community}
                     createdAt={thread.createdAt}
                     comments={thread.children}
-                    likes={thread.likes}
                 />
             </div>
 
@@ -58,7 +57,6 @@ export default async function Page({ params }: { params: { id: string } }) {
                             community={childitem.community}
                             createdAt={childitem.createdAt}
                             comments={childitem.children}
-                            likes={childitem.likes}
                             isComment
                         />
                     ))

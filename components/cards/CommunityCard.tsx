@@ -48,23 +48,13 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
         {members.length > 0 && (
           <div className='flex items-center'>
             {members.map((member, index) => (
-            
-            //   <Image
-            //     key={index}
-            //     src={member.image}
-            //     alt={`user_${index}`}
-            //     width={28}
-            //     height={28}
-            //     className={`${
-            //       index !== 0 && "-ml-2"
-            //     } rounded-full object-cover`}
-            //   />
-            <Avatar className={`${ index !== 0 && '-ml-2'}`}>
-                    <AvatarImage src={member.image} alt={'user_' + index} />
-                    <AvatarFallback>{
-                        name.split(" ").map(word => word[0])
-                    }</AvatarFallback>
-                </Avatar>
+
+              <Avatar key={'index'+ index} className={`${index !== 0 && '-ml-4'}`}>
+                <AvatarImage src={member.image} alt={'user_' + index} />
+                <AvatarFallback>{
+                  name.split(" ").map(word => word[0])
+                }</AvatarFallback>
+              </Avatar>
             ))}
             {members.length > 3 && (
               <p className='ml-1 text-subtle-medium text-gray-1'>
