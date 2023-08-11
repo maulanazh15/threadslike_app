@@ -34,6 +34,7 @@ export default async function Home() {
                   community={thread.community}
                   createdAt={thread.createdAt}
                   comments={thread.children}
+                  likes={thread.likes}
                 />
               ))}
               

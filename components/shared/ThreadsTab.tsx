@@ -47,6 +47,7 @@ export default async function ThreadsTab({
                         } // todo
                         createdAt={thread.createdAt}
                         comments={thread.children}
+                        likes={thread.likes}
                     />
                 ))
             }
