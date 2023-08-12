@@ -1,49 +1,43 @@
-"use client";
-import { checkUserLikeThread, getThreadLikes, userDislikesThread, userLikesThread } from "@/lib/actions/user.action";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation"
+"use client"
+
 import { useState, useEffect } from "react";
 import LikeLoading from "../loading/LikeLoading";
+import { checkUserLikeThread, userLikesThread, userDislikesThread } from "@/lib/actions/user.action";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
-
-export default function LikeButton({ userId, threadId }: { stateLike?: boolean; userId: string; like?: number; threadId: string }) {
-    const pathname = usePathname()
-    const router = useRouter()
-    async function getLikesAndStateLikes() {
-        const like = await getThreadLikes(threadId)
-        const stateLike = await checkUserLikeThread({ userId, threadId })
-        return { like, stateLike }
-    }
+export default function LikeButton({ userId, threadId, like, stateLike }: { noSsr?: boolean, stateLike: boolean; userId: string; like: number; threadId: string }) {
+    const pathname = usePathname();
 
     const [loading, setLoading] = useState(true);
-    const [likes, setLikes] = useState(0);
-    const [clicked, setClicked] = useState(false);
+    const [likes, setLikes] = useState(like);
+    const [clicked, setClicked] = useState(stateLike);
+
+    const fetchData = async () => {
+        try {
+            const { likes, stateLike } = await checkUserLikeThread({ userId, threadId });
+            setLikes(likes);
+            setClicked(stateLike);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setLoading(false); // Set loading to false when fetching is done
+        }
+    };
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const { like, stateLike } = await getLikesAndStateLikes();
-                setLikes(like);
-                setClicked(stateLike);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false); // Set loading to false when fetching is done
-            }
-        }
-
         fetchData();
-    }, []); // Empty dependency array means this effect runs only once after component mount
-
+    }, [pathname]); // Empty dependency array means this effect runs only once after component mount
 
     const handleLikeClick = async () => {
+        const updatedLikes = clicked ? likes - 1 : likes + 1;
+
+        setLikes(updatedLikes);
+        setClicked(!clicked);
+
         if (!clicked) {
-            setLikes(likes + 1);
-            setClicked(true);
             await userLikesThread({ userId, threadId, path: pathname });
         } else {
-            setLikes(likes - 1);
-            setClicked(false);
             await userDislikesThread({ userId, threadId, path: pathname });
         }
     };

@@ -5,6 +5,7 @@ import { fetchUser } from "@/lib/actions/user.action";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
+
 export default async function Page({ params }: { params: { id: string } }) {
     if (!params.id) return null;
 

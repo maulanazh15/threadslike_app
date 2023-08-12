@@ -248,9 +248,23 @@ export async function getThreadLikes(threadId: string) {
 
 export async function checkUserLikeThread({ userId, threadId }: { userId: string, threadId: string}) {
     try {
-        const user = await User.findOne({ id: userId, likedThreads: threadId });
+        const { likes } = await Thread.findById(threadId).select('likes')
+        const stateLike = false 
+        const user = await User.findOne({ id: userId, likedThreads: threadId }).populate({
+            path: "likedThreads",
+            model: Thread,
+            match: { _id: threadId},
+            select: 'likes'
+        });
+        // console.log(user)
+        if(user) {
+            const stateLike = true
+            const likes = user.likedThreads[0].likes
+
+            return { stateLike, likes }
+        }
         // console.log(!!user)
-        return !!user; // Returns true if user exists (liked the thread), false otherwise
+        return { stateLike, likes } // Returns true if user exists (liked the thread), false otherwise
     } catch (error: any) {
         throw new Error(error.message);
     }
