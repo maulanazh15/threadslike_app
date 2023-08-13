@@ -182,23 +182,61 @@ export async function getActivity(userId: string) {
     }
 }
 
-export async function userLikesThread({userId, threadId , path} : {userId: string, threadId: string, path: string}) {
+export async function getLikedThreads(userId: string) {
+    try {
+        connectToDB()
+        const likedThreads = await User.findOne({ id: userId }).populate({
+            path: "likedThreads",
+            model: Thread,
+            populate: [
+                {
+                    path: "community",
+                    model: Community,
+                    select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model
+                },
+                {
+                    path: "children",
+                    model: Thread,
+                    populate: {
+                        path: "author",
+                        model: User,
+                        select: "name image id", // Select the "name" and "_id" fields from the "User" model
+                    },
+                },
+                {
+                    path: "author",
+                    model: User,
+                    select: 'name image id'
+                }
+            ],
+        });
+        // console.log(likedThreads)
+        return likedThreads
+    } catch (error: any) {
+        throw new Error(error.message);
+
+    }
+
+}
+
+
+export async function userLikesThread({ userId, threadId, path }: { userId: string, threadId: string, path: string }) {
     try {
         connectToDB()
 
         await User.findOneAndUpdate({
             id: userId
-        }, { $push: { likedThreads:  threadId }  })
-        const userid = await User.findOne({id: userId}).select('_id')
+        }, { $push: { likedThreads: threadId } })
+        const userid = await User.findOne({ id: userId }).select('_id')
         // console.log(userid._id)
-        await Thread.findOneAndUpdate({_id: threadId}, { $push: {likedByUsers: userid._id} })
+        await Thread.findOneAndUpdate({ _id: threadId }, { $push: { likedByUsers: userid._id } })
         const like = await getThreadLikes(threadId)
         await Thread.findByIdAndUpdate(threadId, { likes: like })
 
         revalidatePath(path)
     } catch (error: any) {
         throw new Error(error.message);
-        
+
     }
 }
 
@@ -212,15 +250,15 @@ export async function userDislikesThread({ userId, threadId, path }: { userId: s
             { $pull: { likedThreads: threadId } }
         );
 
-        const userid = await User.findOne({id: userId}).select('_id')
+        const userid = await User.findOne({ id: userId }).select('_id')
         await Thread.findOneAndUpdate(
             { _id: threadId },
             { $pull: { likedByUsers: userid._id } }
         );
         const like = await getThreadLikes(threadId)
-        
+
         // Decrement the likes count for the thread
-        await Thread.findByIdAndUpdate(threadId, { likes: like } );
+        await Thread.findByIdAndUpdate(threadId, { likes: like });
 
         revalidatePath(path)
 
@@ -231,43 +269,43 @@ export async function userDislikesThread({ userId, threadId, path }: { userId: s
 
 export async function getThreadLikes(threadId: string) {
     try {
-      connectToDB();
-  
-      const thread = await Thread.findById(threadId).select('likedByUsers');
-      if (!thread) {
-        return 0; // Thread not found
-      }
-  
-      const likeCount = thread.likedByUsers.length;
-    //   console.log(likeCount)
-      return likeCount;
+        connectToDB();
+
+        const thread = await Thread.findById(threadId).select('likedByUsers');
+        if (!thread) {
+            return 0; // Thread not found
+        }
+
+        const likeCount = thread.likedByUsers.length;
+        //   console.log(likeCount)
+        return likeCount;
     } catch (error: any) {
-      throw new Error(error.message);
+        throw new Error(error.message);
     }
-  }
-  export async function getThreadLikesFast(threadId: string) {
+}
+export async function getThreadLikesFast(threadId: string) {
     try {
-      connectToDB();
-  
-      const { likes } = await Thread.findById(threadId).select('likes');
-      
-      return likes
+        connectToDB();
+
+        const { likes } = await Thread.findById(threadId).select('likes');
+
+        return likes
     } catch (error: any) {
-      throw new Error(error.message);
+        throw new Error(error.message);
     }
-  }
-export async function checkUserLikeThread({ userId, threadId }: { userId: string, threadId: string}) {
+}
+export async function checkUserLikeThread({ userId, threadId }: { userId: string, threadId: string }) {
     try {
         const { likes } = await Thread.findById(threadId).select('likes')
-        const stateLike = false 
+        const stateLike = false
         const user = await User.findOne({ id: userId, likedThreads: threadId }).populate({
             path: "likedThreads",
             model: Thread,
-            match: { _id: threadId},
+            match: { _id: threadId },
             select: 'likes'
         });
         // console.log(user)
-        if(user) {
+        if (user) {
             const stateLike = true
             const likes = user.likedThreads[0].likes
 
