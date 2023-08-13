@@ -9,6 +9,7 @@ import LikeButton from "../shared/LikeButton"
 import { revalidatePath } from "next/cache"
 import { LikesContextProvider } from "@/contexts/LikesContext"
 import { useEffect } from "react"
+import { getThreadLikesFast } from "@/lib/actions/user.action"
 
 
 
@@ -52,7 +53,8 @@ export default async function ThreadCard({
     isComment,
 }: Props) {
     
-    const { likes, stateLike } = await checkUserLikeThread({ userId: currentUserId, threadId: id })
+    const { likes, stateLike } = await checkUserLikeThread({ userId: currentUserId, threadId: id });
+    
     return (
         <article className={`flex w-full flex-col rounded-xl ${isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'}`}>
             <div className="flex items-start justify-between">

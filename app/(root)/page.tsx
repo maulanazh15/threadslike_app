@@ -4,7 +4,6 @@ import { fetchThreads } from "@/lib/actions/thread.action";
 import { UserButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs";
 
-
 export default async function Home() {
   
   const result = await fetchThreads(1, 30);

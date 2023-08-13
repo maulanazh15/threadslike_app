@@ -4,17 +4,19 @@ import { useState, useEffect } from "react";
 import LikeLoading from "../loading/LikeLoading";
 import { checkUserLikeThread, userLikesThread, userDislikesThread } from "@/lib/actions/user.action";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function LikeButton({ userId, threadId, like, stateLike }: { noSsr?: boolean, stateLike: boolean; userId: string; like: number; threadId: string }) {
     const pathname = usePathname();
+    const router = useRouter()
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [likes, setLikes] = useState(like);
     const [clicked, setClicked] = useState(stateLike);
 
     const fetchData = async () => {
         try {
+            setLoading(true)
             const { likes, stateLike } = await checkUserLikeThread({ userId, threadId });
             setLikes(likes);
             setClicked(stateLike);

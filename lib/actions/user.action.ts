@@ -245,7 +245,17 @@ export async function getThreadLikes(threadId: string) {
       throw new Error(error.message);
     }
   }
-
+  export async function getThreadLikesFast(threadId: string) {
+    try {
+      connectToDB();
+  
+      const { likes } = await Thread.findById(threadId).select('likes');
+      
+      return likes
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 export async function checkUserLikeThread({ userId, threadId }: { userId: string, threadId: string}) {
     try {
         const { likes } = await Thread.findById(threadId).select('likes')
