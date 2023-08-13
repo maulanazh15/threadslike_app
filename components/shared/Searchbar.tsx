@@ -17,6 +17,10 @@ function Searchbar({ routeType }: Props) {
     const [search, setSearch] = useState("");
     const [searchType, setSearchType] = useState("");
 
+    const handleSearchType = (value: string) => {
+        setSearchType(value)
+        setSearch("")
+    }
     // query after 0.3s of no input
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -50,7 +54,7 @@ function Searchbar({ routeType }: Props) {
             <div className="flex flex-row items-center justify-end gap-2">
 
             <Separator orientation="vertical" className="h-10 w-[2px] bg-slate-400 rounded-full" />
-            <Select onValueChange={(value) => setSearchType(value)}>
+            <Select onValueChange={(value) => handleSearchType(value)}>
                 <SelectTrigger className="w-[180px] h-9 bg-dark-3 text-light-2 outline-none">
                     <SelectValue placeholder="Search Type" />
                 </SelectTrigger>
