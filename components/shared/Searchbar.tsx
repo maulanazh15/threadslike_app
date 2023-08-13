@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
+import { Select, SelectItem, SelectValue, SelectTrigger, SelectContent } from "../ui/select";
 
 interface Props {
     routeType: string;
@@ -13,19 +15,20 @@ interface Props {
 function Searchbar({ routeType }: Props) {
     const router = useRouter();
     const [search, setSearch] = useState("");
+    const [searchType, setSearchType] = useState("");
 
     // query after 0.3s of no input
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             if (search) {
-                router.push(`/${routeType}?q=` + search);
+                router.push(`/${routeType}?t=${searchType}&q=` + search);
             } else {
-                router.push(`/${routeType}`);
+                router.push(`/${routeType}?t=${searchType}`);
             }
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [search, routeType]);
+    }, [search, searchType]);
 
     return (
         <div className='searchbar'>
@@ -40,10 +43,23 @@ function Searchbar({ routeType }: Props) {
                 id='text'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder={`${routeType !== "/search" ? "Search communities" : "Search creators"
+                placeholder={`${searchType !== "user" ? "Search communities" : "Search creators"
                     }`}
                 className='no-focus searchbar_input'
             />
+            <div className="flex flex-row items-center justify-end gap-2">
+
+            <Separator orientation="vertical" className="h-10 w-[2px] bg-slate-400 rounded-full" />
+            <Select onValueChange={(value) => setSearchType(value)}>
+                <SelectTrigger className="w-[180px] h-9 bg-dark-3 text-light-2 outline-none">
+                    <SelectValue placeholder="Search Type" />
+                </SelectTrigger>
+                <SelectContent className="bg-dark-3 text-light-1 outline-none">
+                    <SelectItem value="communities">Communities</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
+                </SelectContent>
+            </Select>
+            </div>
         </div>
     );
 }
