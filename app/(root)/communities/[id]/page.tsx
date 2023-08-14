@@ -76,13 +76,13 @@ export default async function Page({ params }: { params: { id: string } }) {
                                 }
                         </section>
                     </TabsContent>
-                    <TabsContent value="requests" className="w-full text-light-1">
+                    {/* <TabsContent value="requests" className="w-full text-light-1">
                         <ThreadsTab
                             currentUserId={user.id}
                             accountId={communityDetails._id}
                             accountType="User"
                         />
-                    </TabsContent>
+                    </TabsContent> */}
 
                 </Tabs>
             </div>

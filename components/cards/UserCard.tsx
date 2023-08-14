@@ -34,9 +34,16 @@ export default function UserCard({
                     <p className="text-small-medium text-gray-1">@{username}</p>
                 </div>
             </div>
-            
-            <Button className="user-card_btn" onClick={() => router.push('/profile/'+id)}>
-                    View
+
+            <Button className="user-card_btn" onClick={() => {
+                if (personType === "User") {
+                    router.push('/profile/' + id)
+                }
+                else {
+                    router.push('/communities/' + id)
+                }
+            }}>
+                View
             </Button>
 
         </article>

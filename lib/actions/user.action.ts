@@ -181,7 +181,46 @@ export async function getActivity(userId: string) {
         throw error;
     }
 }
+export async function getRepliesThreads(userId: string) {
+    try {
+        connectToDB();
 
+        // Find all threads created by the user
+        const replies = await Thread.find({ 
+            author: userId,
+            children: { $exists: true, $not: { $size: 0 } }, 
+         }).populate([
+            {
+                path: "community",
+                model: Community,
+                select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model
+            },
+            {
+                path: "children",
+                model: Thread,
+                populate: {
+                    path: "author",
+                    model: User,
+                    select: "name image id", // Select the "name" and "_id" fields from the "User" model
+                },
+            },
+            {
+                path: "author",
+                model: User,
+                select: 'name image id'
+            }
+        ]).sort({createdAt: 'desc'});
+
+        // Collect all the child thread ids (replies) from the 'children' field of each user thread
+        
+        // Find and return the child threads (replies) excluding the ones created by the same user
+
+        return replies;
+    } catch (error) {
+        console.error("Error fetching replies: ", error);
+        throw error;
+    }
+}
 export async function getLikedThreads(userId: string) {
     try {
         connectToDB()
@@ -209,7 +248,7 @@ export async function getLikedThreads(userId: string) {
                     select: 'name image id'
                 }
             ],
-        });
+        }).sort({createdAt: 'desc'});
         // console.log(likedThreads)
         return likedThreads
     } catch (error: any) {

@@ -1,4 +1,4 @@
-import { fetchUserThreads, getLikedThreads } from "@/lib/actions/user.action"
+import { fetchUserThreads, getLikedThreads, getRepliesThreads } from "@/lib/actions/user.action"
 import { redirect } from "next/navigation"
 import ThreadCard from "../cards/ThreadCard"
 import { fetchCommunityThreads } from "@/lib/actions/community.action"
@@ -10,20 +10,20 @@ interface Props {
 }
 
 
-export default async function LikesTab({
+export default async function RepliesTab({
     currentUserId,
     accountId,
     accountType }: Props) {
     
     let result: any
 
-    result = await getLikedThreads(accountId)
+    result = await getRepliesThreads(accountId)
 
     if (!result) redirect('/')
     return (
         <section className="mt-9 flex flex-col gap-10">
             {
-                result.likedThreads.map((thread: any) => (
+                result.map((thread: any) => (
                     <ThreadCard
                         key={thread._id}
                         id={JSON.parse(JSON.stringify(thread._id))}

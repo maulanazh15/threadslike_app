@@ -1,5 +1,6 @@
 import LikesTab from "@/components/shared/LikesTab";
 import ProfileHeader from "@/components/shared/ProfileHeader";
+import RepliesTab from "@/components/shared/RepliesTab";
 import ThreadsTab from "@/components/shared/ThreadsTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
@@ -62,10 +63,10 @@ export default async function Page({ params }: { params: { id: string } }) {
                         />
                     </TabsContent>
                     <TabsContent value="replies" className="w-full text-light-1">
-                        <ThreadsTab
+                        <RepliesTab
                             currentUserId={user.id}
-                            accountId={userInfo.id}
-                            accountType="User"
+                            accountId={userInfo._id}
+                            accountType=""
                         />
                     </TabsContent>
                     <TabsContent value="likes" className="w-full text-light-1">
@@ -75,13 +76,13 @@ export default async function Page({ params }: { params: { id: string } }) {
                             accountType=""
                         />
                     </TabsContent>
-                    <TabsContent value="tagged" className="w-full text-light-1">
+                    {/* <TabsContent value="tagged" className="w-full text-light-1">
                         <ThreadsTab
                             currentUserId={user.id}
                             accountId={userInfo.id}
                             accountType="User"
                         />
-                    </TabsContent>
+                    </TabsContent> */}
                 </Tabs>
             </div>
         </section>

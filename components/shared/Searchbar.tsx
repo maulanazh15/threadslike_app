@@ -53,8 +53,8 @@ function Searchbar({ routeType }: Props) {
             />
             <div className="flex flex-row items-center justify-end gap-2">
 
-            <Separator orientation="vertical" className="h-10 w-[2px] bg-slate-400 rounded-full" />
-            <Select onValueChange={(value) => handleSearchType(value)}>
+                <Separator orientation="vertical" className="h-10 w-[2px] bg-slate-400 rounded-full" />
+                {/* <Select onValueChange={(value) => handleSearchType(value)}>
                 <SelectTrigger className="w-[180px] h-9 bg-dark-3 text-light-2 outline-none">
                     <SelectValue placeholder="Search Type" />
                 </SelectTrigger>
@@ -62,7 +62,16 @@ function Searchbar({ routeType }: Props) {
                     <SelectItem value="communities">Communities</SelectItem>
                     <SelectItem value="user">User</SelectItem>
                 </SelectContent>
-            </Select>
+            </Select> */}
+                <select
+                    className="w-[180px] h-9 bg-dark-3 text-light-2 outline-none"
+                    onChange={(event) => handleSearchType(event.target.value)}
+                    value={searchType} // Make sure to define the selected value from your state
+                >
+                    <option value="" disabled>Select Type</option>
+                    <option value="communities">Communities</option>
+                    <option value="user">User</option>
+                </select>
             </div>
         </div>
     );
